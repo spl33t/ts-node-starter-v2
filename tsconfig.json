@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ESNext",
+    "strictPropertyInitialization": false,
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["reflect-metadata", "node"],
+    "moduleResolution": "node",
+    "rootDir": "./",
+    "outDir": "./dist",
+    "resolveJsonModule": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "test", "**/*spec.ts", "**/*test.ts"]
+}
