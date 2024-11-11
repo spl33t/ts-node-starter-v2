@@ -1,10 +1,6 @@
-function formatWithCase(value: string, token: string): string {
-    if (token === token.toUpperCase()) {
-        return value.toUpperCase(); // Все капсом
-    } else if (token[0] === token[0].toUpperCase()) {
-        return value.charAt(0).toUpperCase() + value.slice(1); // Первая буква заглавная
-    }
-    return value; // Никаких изменений
+const defaultSettings = {
+    locale: 'ru',
+    timezone: "Europe/Moscow"
 }
 
 //В каждой группе токены должны быть указаны от самых длинных к самым коротким 
@@ -46,26 +42,28 @@ type FormatOptions = {
     template?: string;
 };
 
-// TODO: add support select timezone 
-export function createDate(date?: string | Date | number | typeof now[number], locale?: string) {
+export function createDate(date?: string | Date | number | typeof now[number], locale: string = defaultSettings.locale, timeZone: string = defaultSettings.timezone) {
     if (date === undefined || now.includes(date as any)) {
         date = new Date();
     } else {
         date = new Date(date);
     }
 
-    const language = locale;
+    if (timeZone) {
+        date = new Date(date.toLocaleString(locale, { timeZone }))
+    }
+
 
     const map: Record<typeof parts[number], string> = {
         d: date.getDate().toString(),
         dd: date.getDate().toString().padStart(2, "0"),
-        ddd: new Intl.DateTimeFormat(language, { weekday: 'short' }).format(date),
-        dddd: new Intl.DateTimeFormat(language, { weekday: 'long' }).format(date),
+        ddd: new Intl.DateTimeFormat(locale, { timeZone, weekday: 'short' }).format(date),
+        dddd: new Intl.DateTimeFormat(locale, { timeZone, weekday: 'long' }).format(date),
 
         m: (date.getMonth() + 1).toString(),
         mm: (date.getMonth() + 1).toString().padStart(2, "0"),
-        mmm: new Intl.DateTimeFormat(language, { month: 'short' }).format(date).slice(0, -1),
-        mmmm: new Intl.DateTimeFormat(language, { month: 'long' }).format(date),
+        mmm: new Intl.DateTimeFormat(locale, { timeZone, month: 'short' }).format(date).slice(0, -1),
+        mmmm: new Intl.DateTimeFormat(locale, { timeZone, month: 'long' }).format(date),
 
         yy: date.getFullYear().toString().slice(-2),
         yyyy: date.getFullYear().toString(),
@@ -84,18 +82,19 @@ export function createDate(date?: string | Date | number | typeof now[number], l
         ms: date.getMilliseconds().toString().padStart(3, "0"),
 
         zt: (() => {
-            const timeZoneString = new Intl.DateTimeFormat(language, { timeZoneName: 'shortGeneric' }).format(date);
+            const timeZoneString = new Intl.DateTimeFormat(locale, { timeZone, timeZoneName: 'shortGeneric' }).format(date);
 
             const timeZoneParts = timeZoneString.split(','); // Разбиваем строку на части
             delete timeZoneParts[0]
             const zone = timeZoneParts.join("").trim(); // Берем последний элемент, который содержит только часовой пояс
 
-            if (zone === "Moscow") return "Москва"
+            if (locale === "ru" && zone === "Moscow")
+                return "Москва"
 
             return zone
         })(),
         gmt: (() => {
-            const timeZoneString = new Intl.DateTimeFormat(language, { timeZoneName: 'longOffset' }).format(date);
+            const timeZoneString = new Intl.DateTimeFormat(locale, { timeZone, timeZoneName: 'longOffset' }).format(date);
 
             const timeZoneParts = timeZoneString.split(','); // Разбиваем строку на части
             delete timeZoneParts[0]
@@ -160,7 +159,16 @@ export function createDate(date?: string | Date | number | typeof now[number], l
     };
 }
 
-//const niceTemplate = "Ddd dd Mmm yyyy год %nice day ;)% h24 часов min минут ss секунд zt gmt";
+function formatWithCase(value: string, token: string): string {
+    if (token === token.toUpperCase()) {
+        return value.toUpperCase(); // Все капсом
+    } else if (token[0] === token[0].toUpperCase()) {
+        return value.charAt(0).toUpperCase() + value.slice(1); // Первая буква заглавная
+    }
+    return value; // Никаких изменений
+}
+
+const niceTemplate = "Ddd dd Mmm yyyy год %nice day ;)% h24 %часов% min %минут% ss %секунд% zt gmt";
 //const badTemplate = "ddd dd mmm yyyy год nice day ;) h24 часов min минут ss секунд zt gmt";
 //console.log("шаблон:", niceTemplate);
-//console.log("результат:", createDate("*", "ru").format(niceTemplate));
+//console.log("результат:", createDate("*", "en", "America/New_York").format(niceTemplate));
