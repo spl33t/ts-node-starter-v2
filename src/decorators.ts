@@ -9,8 +9,7 @@ function Field() {
     }
 }
 
-
-export class Example {
+export class ExampleClass {
     @Field()
     foo: string
 

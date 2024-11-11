@@ -1,0 +1,19 @@
+services:
+  nodejs-app:
+    build:
+      context: .
+      args:
+        MODE: ${MODE:-prod}  # Значение по умолчанию "prod", если MODE не передан
+    container_name: nodejs-app
+    restart: always
+    environment:
+      - NODE_ENV=${MODE:-prod}  # Передаем MODE в NODE_ENV
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./src  # Путь к папке на хосте
+          target: /app/src  # Путь к папке внутри контейнера
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json  # Перезапуск при изменении package.json

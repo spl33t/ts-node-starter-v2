@@ -1,3 +1,2 @@
-- start dev mode `npm run dev`
-
-- start build `npm run build`
+## Start project
+- see scripts in [package](package.json)
