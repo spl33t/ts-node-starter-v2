@@ -168,7 +168,7 @@ function formatWithCase(value: string, token: string): string {
     return value; // Никаких изменений
 }
 
-const niceTemplate = "Ddd dd Mmm yyyy год %nice day ;)% h24 %часов% min %минут% ss %секунд% zt gmt";
+//const niceTemplate = "Ddd dd Mmm yyyy год %nice day ;)% h24 %часов% min %минут% ss %секунд% zt gmt";
 //const badTemplate = "ddd dd mmm yyyy год nice day ;) h24 часов min минут ss секунд zt gmt";
 //console.log("шаблон:", niceTemplate);
 //console.log("результат:", createDate("*", "en", "America/New_York").format(niceTemplate));
